@@ -20,6 +20,12 @@ static NSString *kickNull(NSString *string) {
     return string;
 }
 
+
+static NSString *removeSpace(NSString *string) {
+    if (!string) return @"";
+    return [string stringByReplacingOccurrencesOfString:@" " withString:@""];
+}
+
 int main(int argc, const char * argv[])
 {
 
@@ -34,19 +40,19 @@ int main(int argc, const char * argv[])
             NSString *lastPinyin = last;
             NSMutableString *pinyin = [NSMutableString string];
             if (first) {
-                firstPinyin = [phonetic(first) stringByReplacingOccurrencesOfString:@" " withString:@""];
+                firstPinyin = removeSpace(phonetic(first));
                 [pinyin appendString:(firstPinyin)];
                 [person setValue:(firstPinyin) forProperty:kABFirstNamePhoneticProperty];
             }
             if (last) {
-                lastPinyin = [phonetic(last) stringByReplacingOccurrencesOfString:@" " withString:@""];
+                lastPinyin = removeSpace(phonetic(last));
                 [pinyin appendString:(lastPinyin)];
                 [person setValue:(lastPinyin) forProperty:kABLastNamePhoneticProperty];
             }
             [myContacts addObject:pinyin];
-            printf("%s\n\n", [[NSString stringWithFormat:@"@%@%@=%@%@, ",
-                           kickNull(first), kickNull(last),
-                           (kickNull(firstPinyin)), (kickNull(lastPinyin))] UTF8String]);
+            printf("%s\n\n", [[NSString stringWithFormat:@"%@ %@=%@ %@ (LastName, FirstName)",
+                           kickNull(last), kickNull(first),
+                           (kickNull(lastPinyin)), (kickNull(firstPinyin))] UTF8String]);
         }
         [ab save];
         
