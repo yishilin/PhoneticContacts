@@ -29,20 +29,24 @@ int main(int argc, const char * argv[])
         NSMutableArray *myContacts = [NSMutableArray array];
         for (ABPerson *person in ab.people) {
             NSString *first = [person valueForProperty:kABFirstNameProperty];
+            NSString *firstPinyin = first;
             NSString *last = [person valueForProperty:kABLastNameProperty];
+            NSString *lastPinyin = last;
             NSMutableString *pinyin = [NSMutableString string];
             if (first) {
-                [pinyin appendString:phonetic(first)];
-                [person setValue:phonetic(first) forProperty:kABFirstNamePhoneticProperty];
+                firstPinyin = [phonetic(first) stringByReplacingOccurrencesOfString:@" " withString:@""];
+                [pinyin appendString:(firstPinyin)];
+                [person setValue:(firstPinyin) forProperty:kABFirstNamePhoneticProperty];
             }
             if (last) {
-                [pinyin appendString:phonetic(last)];
-                [person setValue:phonetic(last) forProperty:kABLastNamePhoneticProperty];
+                lastPinyin = [phonetic(last) stringByReplacingOccurrencesOfString:@" " withString:@""];
+                [pinyin appendString:(lastPinyin)];
+                [person setValue:(lastPinyin) forProperty:kABLastNamePhoneticProperty];
             }
             [myContacts addObject:pinyin];
-            printf("%s", [[NSString stringWithFormat:@"@%@%@=%@%@, ",
+            printf("%s\n\n", [[NSString stringWithFormat:@"@%@%@=%@%@, ",
                            kickNull(first), kickNull(last),
-                           phonetic(kickNull(first)), phonetic(kickNull(last))] UTF8String]);
+                           (kickNull(firstPinyin)), (kickNull(lastPinyin))] UTF8String]);
         }
         [ab save];
         
